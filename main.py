@@ -1,5 +1,6 @@
 import copy
 from graphics import *
+from os import listdir
 
 class Sudoku:
 
@@ -159,8 +160,18 @@ def getPuzzle(n):
 
 print "Which difficulty should the solver demonstrate?"
 # diff = 'Medium'
-diff = raw_input("Easy,Medium,Hard or Impossible: ")
-print diff
+print "Please enter the name of the puzzle you wish to solve (type list to list puzzle names): "
+
+while True:
+    try:
+        diff = raw_input()
+        if diff != "list":
+            puz = getPuzzle(diff)
+            break
+        else:
+            print os.listdir("Puzzles"), "\n", "Please enter one of the above names"
+    except IOError:
+        print "That file does not exist. Please try again."
 
 
 # if diff == "Impossible":
@@ -186,7 +197,7 @@ print diff
 #     row9 = [0,0,0,0,4,0,0,0,6]
 
 
-mySudoku = Sudoku(getPuzzle(diff))
+mySudoku = Sudoku(puz)
 mySudoku.drawPuzzle()
 print "\n"
 mySudoku.solvePuzzle(0,0)
