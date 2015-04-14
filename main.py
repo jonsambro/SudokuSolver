@@ -30,7 +30,13 @@ class Sudoku:
                 hline.setWidth(10)
                 vline.setWidth(10)
 
+    @classmethod
+    def fromScratch(cls):
+        return cls(getPuzzle("Medium"))
+
+
     def puzzleComplete(self):
+
         complete = True
         for row in self.puzzle:
             if 0 in set(row):
@@ -143,6 +149,7 @@ class Sudoku:
             else:
                 return self.solvePuzzle(i+1,0)
 
+
 def getPuzzle(n):
     n = "Puzzles/" + n
     print n
@@ -150,54 +157,43 @@ def getPuzzle(n):
     x = []
     for i in f:
         x = x + [i.strip('\n').split(',')]
-
     for row in x:
         for i, val in enumerate(row):
             row[i] = int(val)
-    print x
     return x
 
 
-print "Which difficulty should the solver demonstrate?"
-# diff = 'Medium'
 print "Please enter the name of the puzzle you wish to solve (type list to list puzzle names): "
+done = False
 
-while True:
+while not(done):
     try:
         diff = raw_input()
         if diff != "list":
             puz = getPuzzle(diff)
-            break
+            mySudoku = Sudoku(puz)
+            done = True
         else:
             print os.listdir("Puzzles"), "\n", "Please enter one of the above names"
     except IOError:
-        print "That file does not exist. Please try again."
+        makeNew = raw_input("That file does not exist. Would you like to create a new puzzle? [Y/N]: ")
+        while not(done):
+            if makeNew == "Y":
+                mySudoku = Sudoku.fromScratch(Sudoku)
+                done = True
+            elif makeNew == "N":
+                print os.listdir("Puzzles"), "\n", "Please enter one of the above names"
+                break
+
+            else:
+                makeNew = raw_input("That input was not recognized, try again: ")
 
 
-# if diff == "Impossible":
-#     row1 = [8,0,0,0,0,0,0,0,0]
-#     row2 = [0,0,3,6,0,0,0,0,0]
-#     row3 = [0,7,0,0,9,0,2,0,0]
-#     row4 = [0,5,0,0,0,7,0,0,0]
-#     row5 = [0,0,0,0,4,5,7,0,0]
-#     row6 = [0,0,0,1,0,0,0,3,0]
-#     row7 = [0,0,1,0,0,0,0,6,8]
-#     row8 = [0,0,8,5,0,0,0,1,0]
-#     row9 = [0,9,0,0,0,0,4,0,0]
-
-# elif diff == "Medium":
-#     row1 = [5,0,0,0,9,0,0,0,0]
-#     row2 = [0,2,9,0,0,0,7,0,0]
-#     row3 = [8,7,0,2,5,0,0,0,0]
-#     row4 = [1,6,0,0,0,0,0,0,0]
-#     row5 = [0,4,5,6,2,9,8,3,0]
-#     row6 = [0,0,0,0,0,0,0,6,2]
-#     row7 = [0,0,0,0,7,5,0,9,4]
-#     row8 = [0,0,3,0,0,0,2,7,0]
-#     row9 = [0,0,0,0,4,0,0,0,6]
 
 
-mySudoku = Sudoku(puz)
+
+
+
 mySudoku.drawPuzzle()
 print "\n"
 mySudoku.solvePuzzle(0,0)
