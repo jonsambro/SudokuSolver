@@ -7,7 +7,7 @@ class Sudoku:
     def  __init__(self, puzzle):
         self.puzzle = copy.copy(puzzle)
         self.original = copy.copy(puzzle)
-        self.win = GraphWin(Sudoku,500,500)
+        self.win = GraphWin('Sudoku',500,500)
         self.texto = []
         textrow = []
         for i, row in enumerate(self.puzzle):
@@ -31,8 +31,54 @@ class Sudoku:
                 vline.setWidth(10)
 
     @classmethod
-    def fromScratch(cls):
-        return cls(getPuzzle("Medium"))
+    def fromScratch(cls, name):
+        inwin = GraphWin('NewSudoku',500,600)
+
+
+        entryob = [[]]
+        for i in range(9):
+            for j in range(9):
+                entryob[i].append(Entry(Point(j*50 + 50, i*50 + 50), 1))
+                entryob[i][j].draw(inwin)
+            entryob.append([])
+
+        for i in range(10):
+            hline = Line(Point(25+50*i,25),Point(25+50*i,475))
+            hline.draw(inwin)
+
+            vline = Line(Point(25, 25+50*i),Point(475, 25+50*i))
+            vline.draw(inwin)
+
+            if i%3 == 0:
+                hline.setWidth(10)
+                vline.setWidth(10)
+
+        Rectangle(Point(270,500),Point(500,600)).draw(inwin)
+        Text(Point(375,550), 'Done').draw(inwin)
+
+        f = open('Puzzles/' + name, 'w')
+        done = False
+        while not(done):
+            m = inwin.getMouse()
+
+            if m.getX() > 270 and m.getY() > 500:
+                for i, row in enumerate(entryob):
+                    for j, e in enumerate(row):
+                        t = e.getText()
+                        if t == '':
+                            f.write("0")
+                        else:
+                            f.write(t)
+                        if j != 8:
+                            f.write(",")
+                        elif i != 8:
+                            f.write("\n")
+                f.close()
+                done = True
+
+        inwin.close()
+
+        return cls(getPuzzle(name))
 
 
     def puzzleComplete(self):
@@ -165,7 +211,6 @@ def getPuzzle(n):
 
 print "Please enter the name of the puzzle you wish to solve (type list to list puzzle names): "
 done = False
-
 while not(done):
     try:
         diff = raw_input()
@@ -179,7 +224,7 @@ while not(done):
         makeNew = raw_input("That file does not exist. Would you like to create a new puzzle? [Y/N]: ")
         while not(done):
             if makeNew == "Y":
-                mySudoku = Sudoku.fromScratch(Sudoku)
+                mySudoku = Sudoku.fromScratch(diff)
                 done = True
             elif makeNew == "N":
                 print os.listdir("Puzzles"), "\n", "Please enter one of the above names"
@@ -197,5 +242,8 @@ while not(done):
 mySudoku.drawPuzzle()
 print "\n"
 mySudoku.solvePuzzle(0,0)
-input()
+try:
+    raw_input()
+except SyntaxError:
+    pass
 mySudoku.win.close()
