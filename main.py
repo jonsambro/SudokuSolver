@@ -53,7 +53,7 @@ class Sudoku:
         rSq = rowNum%3
         cSq = colNum%3
 
-    # -----
+# --------------- Checks Squares-----------------------------------------
         if rSq == 0:
             if cSq ==0:
                 for i in range(3):
@@ -96,6 +96,7 @@ class Sudoku:
                 for i in range(-2,1):
                     for j in range(-2,1):
                         square.append(self.puzzle[rowNum + i][colNum+j])
+#--------------------------------------------------------------------------
 
 
         for row in self.puzzle:
@@ -142,7 +143,7 @@ class Sudoku:
             else:
                 return self.solvePuzzle(i+1,0)
 
-def createSudoku():
+##def createSudoku():
 
         
 
